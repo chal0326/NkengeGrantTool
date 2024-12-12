@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Grants from './pages/Grants';
 import Templates from './pages/Templates';
 import Applications from './pages/Applications';
+import EditApplication from './pages/EditApplication';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/grants" element={<Grants />} />
             <Route path="/templates" element={<Templates />} />
             <Route path="/applications" element={<Applications />} />
+            <Route path="/applications/:grantId/edit" element={<EditApplication />} />
           </Routes>
         </main>
       </div>

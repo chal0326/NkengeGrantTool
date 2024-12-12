@@ -16,7 +16,7 @@ export interface Template {
   id: string;
   name: string;
   content: string;
-  category: 'mission_statement' | 'project_description' | 'budget' | 'impact' | 'other';
+  category: 'organization_info' | 'project_details' | 'financial_info' | 'impact_info';
   created_at: string;
   updated_at: string;
 }

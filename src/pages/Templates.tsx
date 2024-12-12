@@ -1,103 +1,64 @@
-import React, { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Palette } from 'lucide-react';
-import { OrganizationInfo } from '../components/grant-form/OrganizationInfo';
-import { ContactInfo } from '../components/grant-form/ContactInfo';
-import { ProjectDetails } from '../components/grant-form/ProjectDetails';
-import { Timeline } from '../components/grant-form/Timeline';
-import { FinancialInfo } from '../components/grant-form/FinancialInfo';
-import { AdditionalInfo } from '../components/grant-form/AdditionalInfo';
-import { saveGrantApplication } from '../lib/grant-services';
-import { grantFormSchema, type GrantFormData } from '../types/grant';
+import React from 'react';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { useTemplates } from '../hooks/useTemplates';
+import { OrganizationInfo } from '../components/templates/OrganizationInfo';
+import { ProjectDetails } from '../components/templates/ProjectDetails';
+import { FinancialInfo } from '../components/templates/FinancialInfo';
+import { ImpactInfo } from '../components/templates/ImpactInfo';
 
-export function Templates() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+export default function Templates() {
+  const { templates, loading, error } = useTemplates();
+  const [activeSection, setActiveSection] = React.useState<string>('organization');
 
-  const methods = useForm<GrantFormData>({
-    resolver: zodResolver(grantFormSchema),
-  });
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-  const onSubmit = async (data: GrantFormData) => {
-    try {
-      setIsSubmitting(true);
-      setError(null);
-      await saveGrantApplication(data);
-      setSuccess(true);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'An error occurred while saving the form'
-      );
-    } finally {
-      setIsSubmitting(false);
+  const sections = [
+    { id: 'organization', name: 'Organization Information' },
+    { id: 'project', name: 'Project Details' },
+    { id: 'financial', name: 'Financial Information' },
+    { id: 'impact', name: 'Impact Information' }
+  ];
+
+  const renderSection = () => {
+    switch (activeSection) {
+      case 'organization':
+        return <OrganizationInfo />;
+      case 'project':
+        return <ProjectDetails />;
+      case 'financial':
+        return <FinancialInfo />;
+      case 'impact':
+        return <ImpactInfo />;
+      default:
+        return null;
     }
   };
 
-  type TemplateFormData = z.infer<typeof templateSchema>;
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <Palette className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">
-              BIPOC Arts Grant Portal
-            </h1>
-          </div>
+    <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-900">Organization Templates</h1>
+      </div>
+
+      <div className="flex space-x-4">
+        {sections.map((section) => (
+          <Button
+            key={section.id}
+            variant={activeSection === section.id ? 'default' : 'outline'}
+            onClick={() => setActiveSection(section.id)}
+          >
+            {section.name}
+          </Button>
+        ))}
+      </div>
+
+      <Card>
+        <div className="p-6">
+          {renderSection()}
         </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white shadow rounded-lg p-6">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-red-600">{error}</p>
-            </div>
-          )}
-
-          {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
-              <p className="text-green-600">
-                Grant application saved successfully!
-              </p>
-            </div>
-          )}
-
-          <FormProvider {...methods}>
-            <form
-              onSubmit={methods.handleSubmit(onSubmit)}
-              className="space-y-12"
-            >
-              <OrganizationInfo />
-              <ContactInfo />
-              <ProjectDetails />
-              <Timeline />
-              <FinancialInfo />
-              <AdditionalInfo />
-
-              <div className="flex justify-end pt-6 border-t border-gray-200">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`${
-                    isSubmitting
-                      ? 'bg-blue-400'
-                      : 'bg-blue-600 hover:bg-blue-700'
-                  } text-white px-6 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
-                >
-                  {isSubmitting ? 'Saving...' : 'Save Progress'}
-                </button>
-              </div>
-            </form>
-          </FormProvider>
-        </div>
-      </main>
+      </Card>
     </div>
   );
 }

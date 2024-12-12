@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { Template } from '../types';
+import type { Template } from '../types';
+
+interface SaveTemplateParams {
+  name: string;
+  category: Template['category'];
+  content: string;
+}
 
 export function useTemplates() {
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -11,38 +17,81 @@ export function useTemplates() {
     fetchTemplates();
   }, []);
 
-  async function fetchTemplates() {
+  const fetchTemplates = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('templates')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setTemplates(data);
+      if (fetchError) throw fetchError;
+      setTemplates(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Failed to fetch templates');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  async function addTemplate(template: Omit<Template, 'id' | 'created_at' | 'updated_at'>) {
+  const saveTemplate = async ({ name, category, content }: SaveTemplateParams) => {
     try {
-      const { data, error } = await supabase
-        .from('templates')
-        .insert([template])
-        .select()
-        .single();
+      // Check if a template with this category already exists
+      const existingTemplate = templates.find(t => t.category === category);
 
-      if (error) throw error;
-      setTemplates(prev => [data, ...prev]);
-      return data;
+      if (existingTemplate) {
+        // Update existing template
+        const { error: updateError } = await supabase
+          .from('templates')
+          .update({ name, content, updated_at: new Date().toISOString() })
+          .eq('id', existingTemplate.id);
+
+        if (updateError) throw updateError;
+      } else {
+        // Create new template
+        const { error: insertError } = await supabase
+          .from('templates')
+          .insert([
+            {
+              name,
+              category,
+              content,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+          ]);
+
+        if (insertError) throw insertError;
+      }
+
+      // Refresh templates
+      await fetchTemplates();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      return null;
+      setError(err instanceof Error ? err.message : 'Failed to save template');
+      throw err;
     }
-  }
+  };
 
-  return { templates, loading, error, fetchTemplates, addTemplate };
+  const deleteTemplate = async (id: string) => {
+    try {
+      const { error: deleteError } = await supabase
+        .from('templates')
+        .delete()
+        .eq('id', id);
+
+      if (deleteError) throw deleteError;
+      await fetchTemplates();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete template');
+      throw err;
+    }
+  };
+
+  return {
+    templates,
+    loading,
+    error,
+    saveTemplate,
+    deleteTemplate,
+    refreshTemplates: fetchTemplates,
+  };
 }
