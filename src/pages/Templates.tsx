@@ -8,7 +8,7 @@ import { FinancialInfo } from '../components/templates/FinancialInfo';
 import { ImpactInfo } from '../components/templates/ImpactInfo';
 
 export default function Templates() {
-  const { templates, loading, error } = useTemplates();
+  const { loading, error } = useTemplates();
   const [activeSection, setActiveSection] = React.useState<string>('organization');
 
   if (loading) return <div>Loading...</div>;
@@ -46,7 +46,7 @@ export default function Templates() {
         {sections.map((section) => (
           <Button
             key={section.id}
-            variant={activeSection === section.id ? 'default' : 'outline'}
+            variant={activeSection === section.id ? 'primary' : 'outline'}
             onClick={() => setActiveSection(section.id)}
           >
             {section.name}

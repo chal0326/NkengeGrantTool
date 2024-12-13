@@ -1,7 +1,8 @@
 import React from 'react';
 import { Grant } from '../../types';
 import { Card } from '../ui/Card';
-import { Calendar, DollarSign } from 'lucide-react';
+import CalendarIcon from 'lucide-react/dist/esm/icons/calendar';
+import DollarSignIcon from 'lucide-react/dist/esm/icons/dollar-sign';
 import { format } from 'date-fns';
 
 interface GrantListProps {
@@ -29,11 +30,11 @@ export function GrantList({ grants, onSelectGrant }: GrantListProps) {
           </div>
           <div className="mt-4 flex items-center space-x-4 text-sm text-gray-600">
             <div className="flex items-center">
-              <DollarSign className="w-4 h-4 mr-1" />
+              <DollarSignIcon className="w-4 h-4 mr-1" />
               {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(grant.amount)}
             </div>
             <div className="flex items-center">
-              <Calendar className="w-4 h-4 mr-1" />
+              <CalendarIcon className="w-4 h-4 mr-1" />
               {format(new Date(grant.deadline), 'MMM d, yyyy')}
             </div>
           </div>

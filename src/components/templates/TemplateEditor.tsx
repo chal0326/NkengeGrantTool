@@ -2,7 +2,10 @@ import React from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Button } from '../ui/Button';
-import { Bold, Italic, List, ListOrdered } from 'lucide-react';
+import BoldIcon from 'lucide-react/dist/esm/icons/bold'
+import ItalicIcon from 'lucide-react/dist/esm/icons/italic'
+import ListIcon from 'lucide-react/dist/esm/icons/list'
+import ListOrderedIcon from 'lucide-react/dist/esm/icons/list-ordered'
 
 interface TemplateEditorProps {
   content: string;
@@ -31,7 +34,7 @@ export function TemplateEditor({ content, onChange }: TemplateEditorProps) {
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={editor.isActive('bold') ? 'bg-gray-200' : ''}
         >
-          <Bold className="w-4 h-4" />
+          <BoldIcon className="w-4 h-4" />
         </Button>
         <Button
           variant="secondary"
@@ -39,7 +42,7 @@ export function TemplateEditor({ content, onChange }: TemplateEditorProps) {
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={editor.isActive('italic') ? 'bg-gray-200' : ''}
         >
-          <Italic className="w-4 h-4" />
+          <ItalicIcon className="w-4 h-4" />
         </Button>
         <Button
           variant="secondary"
@@ -47,7 +50,7 @@ export function TemplateEditor({ content, onChange }: TemplateEditorProps) {
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive('bulletList') ? 'bg-gray-200' : ''}
         >
-          <List className="w-4 h-4" />
+          <ListIcon className="w-4 h-4" />
         </Button>
         <Button
           variant="secondary"
@@ -55,7 +58,7 @@ export function TemplateEditor({ content, onChange }: TemplateEditorProps) {
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive('orderedList') ? 'bg-gray-200' : ''}
         >
-          <ListOrdered className="w-4 h-4" />
+          <ListOrderedIcon className="w-4 h-4" />
         </Button>
       </div>
       <EditorContent editor={editor} className="prose max-w-none p-4" />

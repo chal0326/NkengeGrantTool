@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Search, FileText, PenTool } from 'lucide-react';
-import { Menu } from 'lucide-react';
+import LayoutDashboardIcon from 'lucide-react/dist/esm/icons/layout-dashboard'
+import SearchIcon from 'lucide-react/dist/esm/icons/search'
+import FileTextIcon from 'lucide-react/dist/esm/icons/file-text'
+import PenToolIcon from 'lucide-react/dist/esm/icons/pen-tool'
+import MenuIcon from 'lucide-react/dist/esm/icons/menu'
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +20,7 @@ export default function Sidebar() {
         className="md:hidden p-3 text-purple-800"
         onClick={toggleSidebar}
       >
-        <Menu className="w-6 h-6" />
+        <MenuIcon className="w-6 h-6" />
       </button>
 
       {/* Sidebar */}
@@ -38,7 +41,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <LayoutDashboard className="w-5 h-5 mr-3" />
+            <LayoutDashboardIcon className="w-5 h-5 mr-3" />
             Dashboard
           </NavLink>
           <NavLink
@@ -49,7 +52,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <Search className="w-5 h-5 mr-3" />
+            <SearchIcon className="w-5 h-5 mr-3" />
             Grant Search
           </NavLink>
           <NavLink
@@ -60,7 +63,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <FileText className="w-5 h-5 mr-3" />
+            <FileTextIcon className="w-5 h-5 mr-3" />
             Templates
           </NavLink>
           <NavLink
@@ -71,7 +74,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <PenTool className="w-5 h-5 mr-3" />
+            <PenToolIcon className="w-5 h-5 mr-3" />
             Applications
           </NavLink>
         </nav>

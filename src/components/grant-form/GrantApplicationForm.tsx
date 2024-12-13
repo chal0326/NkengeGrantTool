@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { grantFormSchema, type GrantFormData } from '../../types/grant';
@@ -9,8 +9,8 @@ import { Timeline } from './Timeline';
 import { FinancialInfo } from './FinancialInfo';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Button } from '../ui/Button';
-import { Card } from '../ui/Card';
 import { useTemplates } from '../../hooks/useTemplates';
+import type { Template } from '../../types';
 
 interface GrantApplicationFormProps {
   onSubmit: (data: GrantFormData) => Promise<void>;
@@ -87,6 +87,10 @@ function getDefaultValues(templates: Template[], initialData?: Partial<GrantForm
     defaults.financial = {
       ...defaults.financial,
       annualBudget: orgData.annualOperatingBudget,
+      projectBudget: 0,
+      requestedAmount: 0,
+      isFullyFunded: false,
+      otherFunding: []
     };
   }
 
@@ -96,9 +100,18 @@ function getDefaultValues(templates: Template[], initialData?: Partial<GrantForm
     const projectData = JSON.parse(projectTemplate.content);
     defaults.project = {
       ...defaults.project,
-      goals: [projectData.projectGoals], // Convert to array as required by schema
+      name: projectData.name || '',
+      description: projectData.description || '',
+      goals: [projectData.projectGoals],
       targetAudience: projectData.targetAudience,
-      measurement: projectData.evaluationMethods,
+      alignment: projectData.alignment || '',
+      timeline: {
+        startDate: '',
+        endDate: '',
+        milestones: []
+      },
+      outcomes: projectData.outcomes || '',
+      measurement: projectData.evaluationMethods
     };
   }
 
@@ -108,8 +121,12 @@ function getDefaultValues(templates: Template[], initialData?: Partial<GrantForm
     const financialData = JSON.parse(financialTemplate.content);
     defaults.financial = {
       ...defaults.financial,
-      budgetingProcess: financialData.budgetingProcess,
-      financialControls: financialData.financialControls,
+      annualBudget: financialData.annualBudget,
+      projectBudget: financialData.projectBudget,
+      requestedAmount: financialData.requestedAmount,
+      isFullyFunded: financialData.isFullyFunded,
+      otherFunding: financialData.otherFunding,
+      financialStatements: financialData.financialStatements,
     };
   }
 

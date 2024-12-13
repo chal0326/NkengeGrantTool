@@ -1,7 +1,8 @@
-import React from 'react';
+// import React from 'react';
 import { TextAreaProps } from '../../types/form';
+import { FieldValues, Path } from 'react-hook-form';
 
-export function TextArea<T>({
+export function TextArea<T extends FieldValues>({
   register,
   name,
   label,
@@ -10,12 +11,12 @@ export function TextArea<T>({
 }: TextAreaProps<T>) {
   return (
     <div className="space-y-2">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+      <label htmlFor={String(name)} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
       <textarea
-        {...register(name)}
-        id={name}
+        {...register(name as Path<T>, { required: true })}
+        id={String(name)}
         placeholder={placeholder}
         rows={4}
         className={`block w-full rounded-md border ${

@@ -1,0 +1,13 @@
+declare module 'lucide-react/dist/esm/icons/layout-dashboard';
+declare module 'lucide-react/dist/esm/icons/search';
+declare module 'lucide-react/dist/esm/icons/file-text';
+declare module 'lucide-react/dist/esm/icons/pen-tool';
+declare module 'lucide-react/dist/esm/icons/menu';
+declare module 'lucide-react/dist/esm/icons/list-ordered';
+declare module 'lucide-react/dist/esm/icons/list';
+declare module 'lucide-react/dist/esm/icons/italic';
+declare module 'lucide-react/dist/esm/icons/bold';
+declare module 'lucide-react/dist/esm/icons/calendar';
+declare module 'lucide-react/dist/esm/icons/dollar-sign';
+declare module 'lucide-react/dist/esm/icons/upload';
+declare module 'lucide-react/dist/esm/icons/clock'
