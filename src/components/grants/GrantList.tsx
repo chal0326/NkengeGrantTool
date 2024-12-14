@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grant } from '../../types';
 import { Card } from '../ui/Card';
 import CalendarIcon from 'lucide-react/dist/esm/icons/calendar';
@@ -17,9 +16,8 @@ export function GrantList({ grants, onSelectGrant }: GrantListProps) {
         <Card 
           key={grant.id}
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => onSelectGrant?.(grant)}
         >
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start" onClick={() => onSelectGrant?.(grant)}>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">{grant.name}</h3>
               <p className="text-sm text-gray-600">{grant.organization}</p>

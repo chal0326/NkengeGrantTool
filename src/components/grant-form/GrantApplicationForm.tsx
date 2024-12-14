@@ -10,7 +10,13 @@ import { FinancialInfo } from './FinancialInfo';
 import { AdditionalInfo } from './AdditionalInfo';
 import { Button } from '../ui/Button';
 import { useTemplates } from '../../hooks/useTemplates';
-import type { Template } from '../../types';
+import type { 
+  OrganizationInfoTemplate, 
+  ProjectDetailsTemplate, 
+  FinancialInfoTemplate, 
+  ImpactInfoTemplate,
+  Template 
+} from '../../types';
 
 interface GrantApplicationFormProps {
   onSubmit: (data: GrantFormData) => Promise<void>;
@@ -59,6 +65,7 @@ export function GrantApplicationForm({ onSubmit, initialData }: GrantApplication
           <div className="flex justify-end pt-6 border-t border-gray-200">
             <Button
               type="submit"
+              variant="primary"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Saving...' : 'Save Application'}
@@ -73,72 +80,113 @@ export function GrantApplicationForm({ onSubmit, initialData }: GrantApplication
 function getDefaultValues(templates: Template[], initialData?: Partial<GrantFormData>): Partial<GrantFormData> {
   if (initialData) return initialData;
 
-  const defaults: Partial<GrantFormData> = {};
-  
-  // Get organization template
-  const orgTemplate = templates.find(t => t.category === 'organization_info');
-  if (orgTemplate) {
-    const orgData = JSON.parse(orgTemplate.content);
-    defaults.organizationName = orgData.organizationName;
-    defaults.hasNonProfitStatus = orgData.hasNonProfitStatus;
-    defaults.ein = orgData.ein;
-    defaults.missionStatement = orgData.missionStatement;
-    defaults.organizationHistory = orgData.organizationHistory;
-    defaults.financial = {
-      ...defaults.financial,
-      annualBudget: orgData.annualOperatingBudget,
-      projectBudget: 0,
-      requestedAmount: 0,
-      isFullyFunded: false,
-      otherFunding: []
-    };
-  }
-
-  // Get project template
-  const projectTemplate = templates.find(t => t.category === 'project_details');
-  if (projectTemplate) {
-    const projectData = JSON.parse(projectTemplate.content);
-    defaults.project = {
-      ...defaults.project,
-      name: projectData.name || '',
-      description: projectData.description || '',
-      goals: [projectData.projectGoals],
-      targetAudience: projectData.targetAudience,
-      alignment: projectData.alignment || '',
+  const defaults: Partial<GrantFormData> = {
+    project: {
+      name: '',
+      description: '',
+      goals: [''],
+      targetAudience: '',
+      alignment: '',
       timeline: {
         startDate: '',
         endDate: '',
         milestones: []
       },
-      outcomes: projectData.outcomes || '',
-      measurement: projectData.evaluationMethods
+      outcomes: '',
+      measurement: ''
+    },
+    financial: {
+      annualBudget: 0,
+      projectBudget: 0,
+      requestedAmount: 0,
+      isFullyFunded: false,
+      otherFunding: []
+    },
+    impact: {
+      communityContribution: '',
+      communityNeeds: '',
+      beneficiaries: '',
+      equity: ''
+    },
+    contact: {
+      name: '',
+      title: '',
+      email: '',
+      phone: ''
+    },
+    alternateContact: {
+      name: '',
+      title: '',
+      email: '',
+      phone: ''
+    }
+  };
+  
+  // Get organization template
+  const orgTemplate = templates.find(t => t.type === 'organization_info');
+  if (orgTemplate) {
+    const orgData = orgTemplate.content as OrganizationInfoTemplate;
+    defaults.organizationName = orgData.organizationName || '';
+    defaults.hasNonProfitStatus = orgData.hasNonProfitStatus || false;
+    defaults.ein = orgData.ein || '';
+    defaults.missionStatement = orgData.missionStatement || '';
+    defaults.organizationHistory = orgData.organizationHistory || '';
+    if (orgData.annualOperatingBudget) {
+      defaults.financial = {
+        ...defaults.financial,
+        annualBudget: orgData.annualOperatingBudget,
+        projectBudget: defaults.financial?.projectBudget || 0,
+        requestedAmount: 0,
+        isFullyFunded: false,
+        otherFunding: []
+      };
+    }
+  }
+
+  // Get project template
+  const projectTemplate = templates.find(t => t.type === 'project_details');
+  if (projectTemplate) {
+    const projectData = projectTemplate.content as ProjectDetailsTemplate;
+    defaults.project = {
+      ...defaults.project,
+      name: projectData.name || '',
+      description: projectData.projectGoals || '',
+      goals: [projectData.projectGoals || ''],
+      targetAudience: projectData.targetAudience || '',
+      alignment: projectData.evaluationMethods || '',
+      timeline: {
+        startDate: '',
+        endDate: '',
+        milestones: []
+      },
+      outcomes: projectData.successCriteria || '',
+      measurement: projectData.evaluationMethods || ''
     };
   }
 
   // Get financial template
-  const financialTemplate = templates.find(t => t.category === 'financial_info');
+  const financialTemplate = templates.find(t => t.type === 'financial_info');
   if (financialTemplate) {
-    const financialData = JSON.parse(financialTemplate.content);
+    const financialData = financialTemplate.content as FinancialInfoTemplate;
     defaults.financial = {
-      ...defaults.financial,
-      annualBudget: financialData.annualBudget,
-      projectBudget: financialData.projectBudget,
-      requestedAmount: financialData.requestedAmount,
-      isFullyFunded: financialData.isFullyFunded,
-      otherFunding: financialData.otherFunding,
-      financialStatements: financialData.financialStatements,
+      annualBudget: financialData.fundingStrategy?.annualBudget || defaults.financial?.annualBudget || 0,
+      projectBudget: financialData.fundingStrategy?.projectBudget || defaults.financial?.projectBudget || 0,
+      requestedAmount: financialData.fundingStrategy?.requestedAmount || defaults.financial?.requestedAmount || 0,
+      isFullyFunded: financialData.fundingStrategy?.isFullyFunded ?? defaults.financial?.isFullyFunded ?? false,
+      otherFunding: financialData.fundingStrategy?.otherFunding || defaults.financial?.otherFunding || []
     };
   }
 
   // Get impact template
-  const impactTemplate = templates.find(t => t.category === 'impact_info');
+  const impactTemplate = templates.find(t => t.type === 'impact_info');
   if (impactTemplate) {
-    const impactData = JSON.parse(impactTemplate.content);
+    const impactData = impactTemplate.content as ImpactInfoTemplate;
     defaults.impact = {
-      communityContribution: impactData.communityNeeds,
-      communityNeeds: impactData.communityNeeds,
-      beneficiaries: impactData.beneficiaryFeedback,
-      equity: impactData.equityApproach,
+      ...defaults.impact,
+      communityContribution: impactData.communityNeeds || '',
+      communityNeeds: impactData.communityNeeds || '',
+      beneficiaries: impactData.beneficiaryFeedback || '',
+      equity: impactData.equityApproach || ''
     };
   }
 

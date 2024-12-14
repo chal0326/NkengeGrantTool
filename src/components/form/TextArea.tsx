@@ -1,29 +1,37 @@
-// import React from 'react';
-import { TextAreaProps } from '../../types/form';
-import { FieldValues, Path } from 'react-hook-form';
+import React from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
-export function TextArea<T extends FieldValues>({
-  register,
-  name,
+interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'name'> {
+  label: string;
+  error?: string;
+  registration?: UseFormRegisterReturn;
+}
+
+export function TextArea({
   label,
-  placeholder,
   error,
-}: TextAreaProps<T>) {
+  className = '',
+  rows = 3,
+  registration,
+  ...props
+}: TextAreaProps) {
+  const id = props.id || registration?.name;
+
   return (
-    <div className="space-y-2">
-      <label htmlFor={String(name)} className="block text-sm font-medium text-gray-700">
+    <div>
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
-      <textarea
-        {...register(name as Path<T>, { required: true })}
-        id={String(name)}
-        placeholder={placeholder}
-        rows={4}
-        className={`block w-full rounded-md border ${
-          error ? 'border-red-300' : 'border-gray-300'
-        } shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-      />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="mt-1">
+        <textarea
+          id={id}
+          rows={rows}
+          className={`shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border border-gray-300 rounded-md ${className}`}
+          {...registration}
+          {...props}
+        />
+      </div>
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

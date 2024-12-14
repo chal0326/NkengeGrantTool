@@ -1,108 +1,129 @@
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { TextArea } from '../form/TextArea';
 import { Button } from '../ui/Button';
-import { useTemplates } from '../../hooks/useTemplates';
+import { Input } from '../ui/Input';
+import { TextArea } from '../form/TextArea';
+import { MultiSelect } from '../ui/MultiSelect';
+import { useTemplateOptions } from '../../hooks/useTemplateOptions';
+import type { ImpactInfoTemplate } from '../../types';
 
-const impactTemplateSchema = z.object({
-  communityNeeds: z.string().min(1, 'Community needs assessment is required'),
-  impactMeasurement: z.string().min(1, 'Impact measurement approach is required'),
-  pastImpact: z.string().min(1, 'Past impact information is required'),
-  equityApproach: z.string().min(1, 'Equity approach is required'),
-  communityEngagement: z.string().min(1, 'Community engagement strategy is required'),
-  longTermImpact: z.string().min(1, 'Long-term impact strategy is required'),
-  beneficiaryFeedback: z.string().min(1, 'Beneficiary feedback process is required'),
-});
+interface ImpactInfoProps {
+  initialData?: ImpactInfoTemplate;
+  onSave: (data: ImpactInfoTemplate) => void;
+}
 
-type ImpactTemplateData = z.infer<typeof impactTemplateSchema>;
-
-export function ImpactInfo() {
-  const { templates, saveTemplate } = useTemplates();
-  const impactTemplate = templates.find(t => t.category === 'impact_info');
-
-  const { register, handleSubmit, formState: { errors } } = useForm<ImpactTemplateData>({
-    resolver: zodResolver(impactTemplateSchema),
-    defaultValues: impactTemplate ? JSON.parse(impactTemplate.content) : undefined,
+export function ImpactInfo({ initialData, onSave }: ImpactInfoProps) {
+  const { register, handleSubmit, setValue, watch } = useForm<ImpactInfoTemplate>({
+    defaultValues: initialData || {
+      type: 'impact_info',
+      communityNeeds: '',
+      equityApproach: '',
+      beneficiaryFeedback: '',
+      communityEngagement: '',
+      demographicData: {
+        categories: [],
+        collectionMethod: '',
+        frequency: '',
+      },
+      longTermImpact: '',
+      communityPartnerships: [],
+      artsSectorImpact: '',
+    },
   });
 
-  const onSubmit = async (data: ImpactTemplateData) => {
-    await saveTemplate({
-      name: 'Impact Information',
-      category: 'impact_info',
-      content: JSON.stringify(data),
-    });
+  const { options: demographicOptions } = useTemplateOptions('demographics');
+  const selectedDemographics = watch('demographicData.categories') || [];
+
+  const handleDemographicsChange = (selectedIds: string[]) => {
+    setValue('demographicData.categories', selectedIds);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Impact Information Template</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          This information will be used to demonstrate your organization's impact in grant applications.
-        </p>
+    <form onSubmit={handleSubmit(onSave)} className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Community Needs</label>
+          <TextArea
+            label="Community Needs"
+            {...register('communityNeeds')}
+            placeholder="Describe the community needs this project addresses..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Equity Approach</label>
+          <TextArea
+            label="Equity Approach"
+            {...register('equityApproach')}
+            placeholder="Describe your approach to equity and inclusion..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Beneficiary Feedback</label>
+          <TextArea
+            label="Beneficiary Feedback"
+            {...register('beneficiaryFeedback')}
+            placeholder="Describe how you collect and incorporate beneficiary feedback..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Community Engagement</label>
+          <TextArea
+            label="Community Engagement"
+            {...register('communityEngagement')}
+            placeholder="Describe your community engagement strategies..."
+          />
+        </div>
+
+        <div className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700">Demographic Data</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Categories</label>
+            <MultiSelect
+              options={demographicOptions.map(opt => ({ id: opt.value, label: opt.label }))}
+              selectedIds={selectedDemographics}
+              onChange={handleDemographicsChange}
+              placeholder="Select demographic categories..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Collection Method</label>
+            <Input
+              registration={register('demographicData.collectionMethod')}
+              placeholder="How will demographic data be collected?"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Frequency</label>
+            <Input
+              registration={register('demographicData.frequency')}
+              placeholder="How often will data be collected?"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Long Term Impact</label>
+          <TextArea
+            label="Long Term Impact"
+            {...register('longTermImpact')}
+            placeholder="Describe the expected long-term impact..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Arts Sector Impact</label>
+          <TextArea
+            label="Arts Sector Impact"
+            {...register('artsSectorImpact')}
+            placeholder="Describe the impact on the arts sector..."
+          />
+        </div>
       </div>
 
-      <TextArea
-        register={register}
-        name="communityNeeds"
-        label="How do you assess community needs?"
-        placeholder="Describe your process for identifying and understanding community needs"
-        error={errors.communityNeeds?.message}
-      />
-
-      <TextArea
-        register={register}
-        name="impactMeasurement"
-        label="How do you measure and evaluate impact?"
-        placeholder="Describe your impact measurement methodology"
-        error={errors.impactMeasurement?.message}
-      />
-
-      <TextArea
-        register={register}
-        name="pastImpact"
-        label="What impact have you achieved in the past?"
-        placeholder="Provide examples of your organization's past achievements and impact"
-        error={errors.pastImpact?.message}
-      />
-
-      <TextArea
-        register={register}
-        name="equityApproach"
-        label="How do you approach equity in your work?"
-        placeholder="Describe your strategy for promoting equity and inclusion"
-        error={errors.equityApproach?.message}
-      />
-
-      <TextArea
-        register={register}
-        name="communityEngagement"
-        label="How do you engage with the community?"
-        placeholder="Describe your community engagement and participation strategies"
-        error={errors.communityEngagement?.message}
-      />
-
-      <TextArea
-        register={register}
-        name="longTermImpact"
-        label="What is your approach to ensuring long-term impact?"
-        placeholder="Describe your strategy for creating sustainable, lasting change"
-        error={errors.longTermImpact?.message}
-      />
-
-      <TextArea
-        register={register}
-        name="beneficiaryFeedback"
-        label="How do you collect and incorporate beneficiary feedback?"
-        placeholder="Describe your process for gathering and acting on feedback from those you serve"
-        error={errors.beneficiaryFeedback?.message}
-      />
-
-      <div className="flex justify-end pt-6">
-        <Button type="submit">
-          Save Impact Template
-        </Button>
+      <div className="flex justify-end">
+        <Button type="submit">Save Template</Button>
       </div>
     </form>
   );

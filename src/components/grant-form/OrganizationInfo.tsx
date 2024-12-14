@@ -1,9 +1,12 @@
-import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { FormField } from '../form/FormField';
 import { TextArea } from '../form/TextArea';
 import { FileUpload } from '../form/FileUpload';
+import type { GrantFormData } from '../../types/grant';
 
 export function OrganizationInfo() {
+  const { register } = useFormContext<GrantFormData>();
+
   return (
     <div className="space-y-6">
       <div className="border-b border-gray-200 pb-6">
@@ -14,15 +17,15 @@ export function OrganizationInfo() {
       </div>
 
       <FormField
-        name="organizationName"
+        {...register('organizationName')}
         label="What is the official name of your organization?"
         placeholder="Enter your organization's legal name"
       />
 
       <FormField
-        name="hasNonProfitStatus"
-        label="Do you have 501(c)(3) nonprofit status?"
+        {...register('hasNonProfitStatus')}
         type="checkbox"
+        label="Do you have 501(c)(3) nonprofit status?"
       />
 
       <FileUpload
@@ -33,19 +36,19 @@ export function OrganizationInfo() {
       />
 
       <FormField
-        name="ein"
+        {...register('ein')}
         label="What is your EIN (Employer Identification Number)?"
         placeholder="XX-XXXXXXX"
       />
 
       <TextArea
-        name="missionStatement"
+        {...register('missionStatement')}
         label="What is your organization's mission statement?"
         placeholder="Enter your organization's mission statement"
       />
 
       <TextArea
-        name="organizationHistory"
+        {...register('organizationHistory')}
         label="Provide a brief history of your organization"
         placeholder="Describe your organization's history and development"
       />

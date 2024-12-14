@@ -1,29 +1,47 @@
 import React from 'react';
-import { FormFieldProps } from '../../types/form';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
-export function FormField<T>({
-  register,
-  name,
+interface FormFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'> {
+  label: string;
+  error?: string;
+  registration?: UseFormRegisterReturn;
+}
+
+export function FormField({
   label,
-  type = 'text',
-  placeholder,
   error,
-}: FormFieldProps<T>) {
+  className = '',
+  type = 'text',
+  registration,
+  ...props
+}: FormFieldProps) {
+  const id = props.id || registration?.name;
+
   return (
-    <div className="space-y-2">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+    <div>
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
-      <input
-        {...register(name)}
-        type={type}
-        id={name}
-        placeholder={placeholder}
-        className={`block w-full rounded-md border ${
-          error ? 'border-red-300' : 'border-gray-300'
-        } shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm`}
-      />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="mt-1">
+        {type === 'checkbox' ? (
+          <input
+            type="checkbox"
+            id={id}
+            className={`h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded ${className}`}
+            {...registration}
+            {...props}
+          />
+        ) : (
+          <input
+            type={type}
+            id={id}
+            className={`shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md ${className}`}
+            {...registration}
+            {...props}
+          />
+        )}
+      </div>
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

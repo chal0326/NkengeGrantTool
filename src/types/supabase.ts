@@ -34,6 +34,123 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          city: string
+          created_at: string | null
+          id: string
+          organization_id: string | null
+          state: string
+          street: string
+          updated_at: string | null
+          zip_code: string
+        }
+        Insert: {
+          city: string
+          created_at?: string | null
+          id?: string
+          organization_id?: string | null
+          state: string
+          street: string
+          updated_at?: string | null
+          zip_code: string
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          id?: string
+          organization_id?: string | null
+          state?: string
+          street?: string
+          updated_at?: string | null
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_line_items: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          description: string
+          grant_application_id: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string | null
+          description: string
+          grant_application_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          description?: string
+          grant_application_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_line_items_grant_application_id_fkey"
+            columns: ["grant_application_id"]
+            isOneToOne: false
+            referencedRelation: "grant_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_partnerships: {
+        Row: {
+          contribution: string
+          created_at: string | null
+          grant_application_id: string | null
+          id: string
+          partner: string
+          role: string
+          updated_at: string | null
+        }
+        Insert: {
+          contribution: string
+          created_at?: string | null
+          grant_application_id?: string | null
+          id?: string
+          partner: string
+          role: string
+          updated_at?: string | null
+        }
+        Update: {
+          contribution?: string
+          created_at?: string | null
+          grant_application_id?: string | null
+          id?: string
+          partner?: string
+          role?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_partnerships_grant_application_id_fkey"
+            columns: ["grant_application_id"]
+            isOneToOne: false
+            referencedRelation: "grant_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           created_at: string | null
@@ -71,6 +188,44 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      demographic_data: {
+        Row: {
+          categories: Json
+          collection_method: string
+          created_at: string | null
+          frequency: string
+          grant_application_id: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          categories: Json
+          collection_method: string
+          created_at?: string | null
+          frequency: string
+          grant_application_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          categories?: Json
+          collection_method?: string
+          created_at?: string | null
+          frequency?: string
+          grant_application_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demographic_data_grant_application_id_fkey"
+            columns: ["grant_application_id"]
+            isOneToOne: false
+            referencedRelation: "grant_applications"
             referencedColumns: ["id"]
           },
         ]
@@ -130,10 +285,17 @@ export type Database = {
       }
       grant_applications: {
         Row: {
+          art_program_details: string | null
+          arts_sector_impact: string | null
           created_at: string | null
           end_date: string
           id: string
+          indirect_cost_basis: string | null
+          indirect_cost_rate: number | null
           is_fully_funded: boolean
+          matching_funds_percentage: number | null
+          matching_funds_required: boolean | null
+          matching_funds_secured: number | null
           organization_id: string
           project_description: string
           project_name: string
@@ -145,10 +307,17 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          art_program_details?: string | null
+          arts_sector_impact?: string | null
           created_at?: string | null
           end_date: string
           id?: string
+          indirect_cost_basis?: string | null
+          indirect_cost_rate?: number | null
           is_fully_funded?: boolean
+          matching_funds_percentage?: number | null
+          matching_funds_required?: boolean | null
+          matching_funds_secured?: number | null
           organization_id: string
           project_description: string
           project_name: string
@@ -160,10 +329,17 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          art_program_details?: string | null
+          arts_sector_impact?: string | null
           created_at?: string | null
           end_date?: string
           id?: string
+          indirect_cost_basis?: string | null
+          indirect_cost_rate?: number | null
           is_fully_funded?: boolean
+          matching_funds_percentage?: number | null
+          matching_funds_required?: boolean | null
+          matching_funds_secured?: number | null
           organization_id?: string
           project_description?: string
           project_name?: string
@@ -294,6 +470,7 @@ export type Database = {
       organizations: {
         Row: {
           annual_operating_budget: number
+          bipoc_women_arts_focus: string | null
           created_at: string | null
           ein: string
           has_nonprofit_status: boolean
@@ -305,6 +482,7 @@ export type Database = {
         }
         Insert: {
           annual_operating_budget: number
+          bipoc_women_arts_focus?: string | null
           created_at?: string | null
           ein: string
           has_nonprofit_status?: boolean
@@ -316,6 +494,7 @@ export type Database = {
         }
         Update: {
           annual_operating_budget?: number
+          bipoc_women_arts_focus?: string | null
           created_at?: string | null
           ein?: string
           has_nonprofit_status?: boolean
@@ -326,6 +505,85 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      programs: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          impact: string
+          name: string
+          organization_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          impact: string
+          name: string
+          organization_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          impact?: string
+          name?: string
+          organization_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_activities: {
+        Row: {
+          activity: string
+          created_at: string | null
+          grant_application_id: string | null
+          id: string
+          method: string
+          responsible_party: string
+          timeline: string
+          updated_at: string | null
+        }
+        Insert: {
+          activity: string
+          created_at?: string | null
+          grant_application_id?: string | null
+          id?: string
+          method: string
+          responsible_party: string
+          timeline: string
+          updated_at?: string | null
+        }
+        Update: {
+          activity?: string
+          created_at?: string | null
+          grant_application_id?: string | null
+          id?: string
+          method?: string
+          responsible_party?: string
+          timeline?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_activities_grant_application_id_fkey"
+            columns: ["grant_application_id"]
+            isOneToOne: false
+            referencedRelation: "grant_applications"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_goals: {
         Row: {
@@ -394,6 +652,44 @@ export type Database = {
           },
         ]
       }
+      project_team_members: {
+        Row: {
+          created_at: string | null
+          grant_application_id: string | null
+          id: string
+          name: string
+          qualifications: string
+          role: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          grant_application_id?: string | null
+          id?: string
+          name: string
+          qualifications: string
+          role: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          grant_application_id?: string | null
+          id?: string
+          name?: string
+          qualifications?: string
+          role?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_team_members_grant_application_id_fkey"
+            columns: ["grant_application_id"]
+            isOneToOne: false
+            referencedRelation: "grant_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       supporting_documents: {
         Row: {
           document_type: string
@@ -435,29 +731,98 @@ export type Database = {
           },
         ]
       }
+      template_options: {
+        Row: {
+          category: string
+          created_at: string | null
+          id: string
+          label: string
+          updated_at: string | null
+          value: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          id?: string
+          label: string
+          updated_at?: string | null
+          value: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          label?: string
+          updated_at?: string | null
+          value?: string
+        }
+        Relationships: []
+      }
+      template_selected_options: {
+        Row: {
+          created_at: string | null
+          field_name: string
+          id: string
+          option_id: string | null
+          template_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          field_name: string
+          id?: string
+          option_id?: string | null
+          template_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          field_name?: string
+          id?: string
+          option_id?: string | null
+          template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_selected_options_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "template_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_selected_options_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       templates: {
         Row: {
           category: string
-          content: string
+          content: Json
           created_at: string | null
           id: string
           name: string
+          type: Database["public"]["Enums"]["template_category_old"]
           updated_at: string | null
         }
         Insert: {
           category: string
-          content: string
+          content: Json
           created_at?: string | null
           id?: string
           name: string
+          type?: Database["public"]["Enums"]["template_category_old"]
           updated_at?: string | null
         }
         Update: {
           category?: string
-          content?: string
+          content?: Json
           created_at?: string | null
           id?: string
           name?: string
+          type?: Database["public"]["Enums"]["template_category_old"]
           updated_at?: string | null
         }
         Relationships: []
@@ -479,11 +844,15 @@ export type Database = {
         | "rejected"
       organization_type: "foundation" | "charity" | "business"
       template_category:
-        | "mission_statement"
-        | "project_description"
-        | "budget"
-        | "impact"
-        | "other"
+        | "organization_info"
+        | "project_details"
+        | "financial_info"
+        | "impact_info"
+      template_category_old:
+        | "organization_info"
+        | "project_details"
+        | "financial_info"
+        | "impact_info"
       user_role: "owner" | "admin" | "user"
     }
     CompositeTypes: {

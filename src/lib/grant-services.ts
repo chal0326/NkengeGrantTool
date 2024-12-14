@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import supabase from './supabase';
 import { uploadFiles } from './supabase-storage';
 import type { GrantFormData } from '../types/grant';
 

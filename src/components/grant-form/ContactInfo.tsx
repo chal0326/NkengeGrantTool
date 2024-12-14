@@ -1,7 +1,10 @@
-import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { FormField } from '../form/FormField';
+import type { GrantFormData } from '../../types/grant';
 
 export function ContactInfo() {
+  const { register } = useFormContext<GrantFormData>();
+
   return (
     <div className="space-y-6">
       <div className="border-b border-gray-200 pb-6">
@@ -12,41 +15,53 @@ export function ContactInfo() {
       </div>
 
       <FormField
-        name="contact.name"
+        {...register('contact.name')}
         label="Primary Contact Name"
         placeholder="Enter the name of the primary contact"
       />
 
       <FormField
-        name="contact.title"
+        {...register('contact.title')}
         label="Title/Position"
         placeholder="Enter the contact's title or position"
       />
 
       <FormField
-        name="contact.email"
-        label="Email Address"
+        {...register('contact.email')}
         type="email"
+        label="Email Address"
         placeholder="Enter contact email address"
       />
 
       <FormField
-        name="contact.phone"
+        {...register('contact.phone')}
         label="Phone Number"
         placeholder="Enter contact phone number"
       />
 
       <FormField
-        name="alternateContact.name"
+        {...register('alternateContact.name')}
         label="Alternate Contact Name"
         placeholder="Enter the name of an alternate contact"
       />
 
       <FormField
-        name="alternateContact.email"
-        label="Alternate Contact Email"
+        {...register('alternateContact.title')}
+        label="Alternate Contact Title"
+        placeholder="Enter alternate contact's title"
+      />
+
+      <FormField
+        {...register('alternateContact.email')}
         type="email"
+        label="Alternate Contact Email"
         placeholder="Enter alternate contact email"
+      />
+
+      <FormField
+        {...register('alternateContact.phone')}
+        label="Alternate Contact Phone"
+        placeholder="Enter alternate contact phone number"
       />
     </div>
   );

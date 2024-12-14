@@ -1,102 +1,134 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { FormField } from '../form/FormField';
-import { TextArea } from '../form/TextArea';
 import { Button } from '../ui/Button';
-import { useTemplates } from '../../hooks/useTemplates';
+import { Input } from '../ui/Input';
+import { TextArea } from '../ui/TextArea';
+import { MultiSelect } from '../ui/MultiSelect';
+import { useTemplateOptions } from '../../hooks/useTemplateOptions';
+import type { OrganizationInfoTemplate } from '../../types';
 
-const organizationTemplateSchema = z.object({
-  organizationName: z.string().min(1, 'Organization name is required'),
-  hasNonProfitStatus: z.boolean(),
-  ein: z.string().regex(/^\d{2}-\d{7}$/, 'Invalid EIN format'),
-  missionStatement: z.string().min(1, 'Mission statement is required'),
-  organizationHistory: z.string().min(1, 'Organization history is required'),
-  annualOperatingBudget: z.number().positive('Annual budget must be positive'),
-});
+interface OrganizationInfoProps {
+  initialData?: OrganizationInfoTemplate;
+  onSave: (data: OrganizationInfoTemplate) => void;
+}
 
-type OrganizationTemplateData = z.infer<typeof organizationTemplateSchema>;
-
-export function OrganizationInfo() {
-  const { templates, saveTemplate } = useTemplates();
-  const organizationTemplate = templates.find(t => t.category === 'organization_info');
-
-  const { register, handleSubmit, formState: { errors } } = useForm<OrganizationTemplateData>({
-    resolver: zodResolver(organizationTemplateSchema),
-    defaultValues: organizationTemplate ? JSON.parse(organizationTemplate.content) : undefined,
+export function OrganizationInfo({ initialData, onSave }: OrganizationInfoProps) {
+  const { register, handleSubmit, setValue, watch } = useForm<OrganizationInfoTemplate>({
+    defaultValues: initialData || {
+      type: 'organization_info',
+      organizationName: '',
+      hasNonProfitStatus: false,
+      ein: '',
+      missionStatement: '',
+      organizationHistory: '',
+      annualOperatingBudget: 0,
+      physicalAddress: {
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+      },
+      currentPrograms: [],
+      bipocWomenArtsFocus: '',
+      keyStaff: [],
+      artForms: [],
+    },
   });
 
-  const onSubmit = async (data: OrganizationTemplateData) => {
-    await saveTemplate({
-      name: 'Organization Information',
-      category: 'organization_info',
-      content: JSON.stringify(data),
-    });
+  const { options: artFormOptions } = useTemplateOptions('art_forms');
+  const selectedArtForms = watch('artForms') || [];
+
+  const handleArtFormsChange = (selectedIds: string[]) => {
+    setValue('artForms', selectedIds);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Organization Information Template</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          This information will be used as a template for all your grant applications.
-        </p>
+    <form onSubmit={handleSubmit(onSave)} className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Organization Name</label>
+          <Input {...register('organizationName')} placeholder="Enter organization name" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Non-Profit Status</label>
+          <input
+            type="checkbox"
+            {...register('hasNonProfitStatus')}
+            className="h-4 w-4 text-blue-600 rounded border-gray-300"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">EIN</label>
+          <Input {...register('ein')} placeholder="Enter EIN" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Mission Statement</label>
+          <TextArea
+            {...register('missionStatement')}
+            placeholder="Enter organization's mission statement"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Organization History</label>
+          <TextArea
+            {...register('organizationHistory')}
+            placeholder="Describe the organization's history"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Annual Operating Budget</label>
+          <Input
+            type="number"
+            {...register('annualOperatingBudget', { valueAsNumber: true })}
+            placeholder="Enter annual operating budget"
+          />
+        </div>
+
+        <div className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700">Physical Address</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Street</label>
+            <Input {...register('physicalAddress.street')} placeholder="Enter street address" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">City</label>
+            <Input {...register('physicalAddress.city')} placeholder="Enter city" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">State</label>
+            <Input {...register('physicalAddress.state')} placeholder="Enter state" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">ZIP Code</label>
+            <Input {...register('physicalAddress.zipCode')} placeholder="Enter ZIP code" />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Art Forms</label>
+          <MultiSelect
+            options={artFormOptions.map(opt => ({ id: opt.value, label: opt.label }))}
+            selectedIds={selectedArtForms}
+            onChange={handleArtFormsChange}
+            placeholder="Select art forms..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">BIPOC Women Arts Focus</label>
+          <TextArea
+            {...register('bipocWomenArtsFocus')}
+            placeholder="Describe your focus on BIPOC women in the arts"
+          />
+        </div>
       </div>
 
-      <FormField<OrganizationTemplateData>
-        register={register}
-        name="organizationName"
-        label="What is the official name of your organization?"
-        placeholder="Enter your organization's legal name"
-        error={errors.organizationName?.message}
-      />
-
-      <FormField<OrganizationTemplateData>
-        register={register}
-        name="hasNonProfitStatus"
-        label="Do you have 501(c)(3) nonprofit status?"
-        type="checkbox"
-        error={errors.hasNonProfitStatus?.message}
-      />
-
-      <FormField<OrganizationTemplateData>
-        register={register}
-        name="ein"
-        label="What is your EIN (Employer Identification Number)?"
-        placeholder="XX-XXXXXXX"
-        error={errors.ein?.message}
-      />
-
-      <TextArea<OrganizationTemplateData>
-        register={register}
-        name="missionStatement"
-        label="What is your organization's mission statement?"
-        placeholder="Enter your organization's mission statement"
-        error={errors.missionStatement?.message}
-      />
-
-      <TextArea<OrganizationTemplateData>
-        register={register}
-        name="organizationHistory"
-        label="Provide a brief history of your organization"
-        placeholder="Describe your organization's history and development"
-        error={errors.organizationHistory?.message}
-      />
-
-      <FormField<OrganizationTemplateData>
-        register={register}
-        name="annualOperatingBudget"
-        label="What is your organization's annual operating budget?"
-        type="number"
-        placeholder="Enter amount in USD"
-        error={errors.annualOperatingBudget?.message}
-      />
-
-      <div className="flex justify-end pt-6">
-        <Button type="submit">
-          Save Organization Template
-        </Button>
+      <div className="flex justify-end">
+        <Button type="submit">Save Template</Button>
       </div>
     </form>
   );
