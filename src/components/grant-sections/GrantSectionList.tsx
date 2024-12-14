@@ -1,7 +1,7 @@
 import { formatDate } from '../../utils/date';
 import { Card } from '../ui/Card';
 import { FileText } from 'lucide-react';
-import { GrantSection } from '../../types';
+import type { GrantSection } from '../../types';
 
 interface GrantSectionListProps {
   sections: GrantSection[];
@@ -9,10 +9,6 @@ interface GrantSectionListProps {
 }
 
 export function GrantSectionList({ sections, onSelectSection }: GrantSectionListProps) {
-  const getIcon = () => {
-    return FileText;
-  };
-
   if (!sections.length) {
     return (
       <Card className="p-6">
@@ -43,4 +39,4 @@ export function GrantSectionList({ sections, onSelectSection }: GrantSectionList
       ))}
     </div>
   );
-}
+} 

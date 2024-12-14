@@ -7,14 +7,14 @@ interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaEl
   registration?: UseFormRegisterReturn;
 }
 
-export function TextArea({
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(({
   label,
   error,
   className = '',
   rows = 3,
   registration,
   ...props
-}: TextAreaProps) {
+}, ref) => {
   const id = props.id || registration?.name;
 
   return (
@@ -27,6 +27,7 @@ export function TextArea({
           id={id}
           rows={rows}
           className={`shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border border-gray-300 rounded-md ${className}`}
+          ref={ref}
           {...registration}
           {...props}
         />
@@ -34,4 +35,4 @@ export function TextArea({
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
-}
+});

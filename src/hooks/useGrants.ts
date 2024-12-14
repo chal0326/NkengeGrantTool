@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { Grant } from '../types';
+import supabase from '../lib/supabase';
+import type { Grant } from '../types';
 
 export function useGrants() {
   const [grants, setGrants] = useState<Grant[]>([]);

@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { FormField } from '../form/FormField';
 import { TextArea } from '../form/TextArea';
 import { Button } from '../ui/Button';
-import { StaffMemberSection as StaffMemberSectionType } from '../../types';
+import type { StaffMemberSection as StaffMemberSectionType } from '../../types';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Staff member name is required'),
@@ -41,9 +41,8 @@ export function StaffMemberSection({ initialData, onSave }: StaffMemberSectionPr
     try {
       await onSave({
         ...data,
-        type: 'organization_info',
-        sectionType: 'staff_member',
-      } as unknown as StaffMemberSectionType);
+        type: 'staff_member',
+      });
     } catch (error) {
       console.error('Error saving staff member section:', error);
     }

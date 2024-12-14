@@ -7,14 +7,14 @@ interface FormFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   registration?: UseFormRegisterReturn;
 }
 
-export function FormField({
+export const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(({
   label,
   error,
   className = '',
   type = 'text',
   registration,
   ...props
-}: FormFieldProps) {
+}, ref) => {
   const id = props.id || registration?.name;
 
   return (
@@ -28,6 +28,7 @@ export function FormField({
             type="checkbox"
             id={id}
             className={`h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded ${className}`}
+            ref={ref}
             {...registration}
             {...props}
           />
@@ -36,6 +37,7 @@ export function FormField({
             type={type}
             id={id}
             className={`shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md ${className}`}
+            ref={ref}
             {...registration}
             {...props}
           />
@@ -44,4 +46,4 @@ export function FormField({
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
-}
+});

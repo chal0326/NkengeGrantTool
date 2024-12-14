@@ -189,3 +189,77 @@ export interface GrantApplication {
 }
 
 export type { TemplateOption, TemplateSelectedOption, TemplateOptionCategory };
+
+// Base types for grant sections
+export type GrantSectionType = 'organization_info' | 'project_details' | 'financial_info' | 'impact_info' | 'staff_member';
+
+export interface GrantSection {
+  id: string;
+  name: string;
+  type: GrantSectionType;
+  content: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+}
+
+// Specific section types
+export interface StaffMemberSection {
+  type: 'staff_member';
+  name: string;
+  title: string;
+  bio: string;
+  email: string;
+}
+
+export interface OrganizationInfoSection {
+  type: 'organization_info';
+  name: string;
+  mission: string;
+  vision: string;
+  history: string;
+  staff_members: StaffMemberSection[];
+}
+
+export interface ProjectDetailsSection {
+  type: 'project_details';
+  name: string;
+  description: string;
+  objectives: string[];
+  timeline: string;
+  deliverables: string[];
+}
+
+export interface FinancialInfoSection {
+  type: 'financial_info';
+  name: string;
+  budget_overview: string;
+  funding_sources: string[];
+  expenses: {
+    category: string;
+    amount: number;
+    description: string;
+  }[];
+}
+
+export interface ImpactInfoSection {
+  type: 'impact_info';
+  name: string;
+  target_population: string;
+  expected_outcomes: string[];
+  measurement_methods: string[];
+  community_partnerships: string[];
+}
+
+// Section options and selections
+export interface GrantSectionOption {
+  id: string;
+  category: string;
+  value: string;
+  label: string;
+}
+
+export interface GrantSectionSelectedOption {
+  section_id: string;
+  option_id: string;
+  created_at: string;
+}

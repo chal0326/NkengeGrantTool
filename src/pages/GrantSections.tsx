@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { GrantSectionList } from '../components/templates/GrantSectionList';
-import { StaffMemberSection } from '../components/templates/StaffMemberSection';
+import { GrantSectionList } from '../components/grant-sections/GrantSectionList';
+import { StaffMemberSection } from '../components/grant-sections/StaffMemberSection';
 import { useGrantSections } from '../hooks/useGrantSections';
 import type { GrantSection, GrantSectionType } from '../types';
 
@@ -92,4 +92,4 @@ export default function GrantSections() {
       )}
     </div>
   );
-}
+} 

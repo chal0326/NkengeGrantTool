@@ -4,7 +4,7 @@ import { useGrants } from '../hooks/useGrants';
 import { GrantApplicationForm } from '../components/grant-form/GrantApplicationForm';
 import { saveGrantApplication } from '../lib/grant-services';
 import type { GrantFormData } from '../types/grant';
-import { supabase } from '../lib/supabase';
+import supabase from '../lib/supabase';
 
 interface Contact {
   name: string;
