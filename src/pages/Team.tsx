@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Users, Briefcase, Building2, UserPlus } from 'lucide-react';
@@ -7,6 +7,16 @@ import { TeamMemberList } from '../components/team/TeamMemberList';
 import { TeamFilters } from '../components/team/TeamFilters';
 import { useTeam } from '../hooks/useTeam';
 import type { TeamMember, TeamFilters as Filters } from '../types/team';
+
+interface TeamMemberFormData {
+  name: string;
+  title: string;
+  email: string;
+  phone?: string;
+  department?: string;
+  bio?: string;
+  role_ids: string[];
+}
 
 export default function Team() {
   const {
@@ -25,7 +35,7 @@ export default function Team() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [filters, setFilters] = useState<Filters>({});
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: TeamMemberFormData) => {
     try {
       if (selectedMember) {
         await updateMember(selectedMember.id, {

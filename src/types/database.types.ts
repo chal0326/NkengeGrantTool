@@ -421,6 +421,102 @@ export type Database = {
           },
         ]
       }
+      grant_section_options: {
+        Row: {
+          category: string
+          created_at: string | null
+          id: string
+          label: string
+          updated_at: string | null
+          value: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          id?: string
+          label: string
+          updated_at?: string | null
+          value: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          label?: string
+          updated_at?: string | null
+          value?: string
+        }
+        Relationships: []
+      }
+      grant_section_selected_options: {
+        Row: {
+          created_at: string | null
+          field_name: string
+          id: string
+          option_id: string | null
+          section_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          field_name: string
+          id?: string
+          option_id?: string | null
+          section_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          field_name?: string
+          id?: string
+          option_id?: string | null
+          section_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grant_section_selected_options_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "grant_section_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grant_section_selected_options_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "grant_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grant_sections: {
+        Row: {
+          category: string
+          content: Json
+          created_at: string | null
+          id: string
+          name: string
+          section_type: Database["public"]["Enums"]["grant_section_category_old"]
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          content: Json
+          created_at?: string | null
+          id?: string
+          name: string
+          section_type?: Database["public"]["Enums"]["grant_section_category_old"]
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          content?: Json
+          created_at?: string | null
+          id?: string
+          name?: string
+          section_type?: Database["public"]["Enums"]["grant_section_category_old"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       grants: {
         Row: {
           amount: number
@@ -965,102 +1061,6 @@ export type Database = {
         }
         Relationships: []
       }
-      template_options: {
-        Row: {
-          category: string
-          created_at: string | null
-          id: string
-          label: string
-          updated_at: string | null
-          value: string
-        }
-        Insert: {
-          category: string
-          created_at?: string | null
-          id?: string
-          label: string
-          updated_at?: string | null
-          value: string
-        }
-        Update: {
-          category?: string
-          created_at?: string | null
-          id?: string
-          label?: string
-          updated_at?: string | null
-          value?: string
-        }
-        Relationships: []
-      }
-      template_selected_options: {
-        Row: {
-          created_at: string | null
-          field_name: string
-          id: string
-          option_id: string | null
-          template_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          field_name: string
-          id?: string
-          option_id?: string | null
-          template_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          field_name?: string
-          id?: string
-          option_id?: string | null
-          template_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "template_selected_options_option_id_fkey"
-            columns: ["option_id"]
-            isOneToOne: false
-            referencedRelation: "template_options"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "template_selected_options_template_id_fkey"
-            columns: ["template_id"]
-            isOneToOne: false
-            referencedRelation: "templates"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      templates: {
-        Row: {
-          category: string
-          content: Json
-          created_at: string | null
-          id: string
-          name: string
-          type: Database["public"]["Enums"]["template_category_old"]
-          updated_at: string | null
-        }
-        Insert: {
-          category: string
-          content: Json
-          created_at?: string | null
-          id?: string
-          name: string
-          type?: Database["public"]["Enums"]["template_category_old"]
-          updated_at?: string | null
-        }
-        Update: {
-          category?: string
-          content?: Json
-          created_at?: string | null
-          id?: string
-          name?: string
-          type?: Database["public"]["Enums"]["template_category_old"]
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       transaction_categories: {
         Row: {
           created_at: string | null
@@ -1097,6 +1097,16 @@ export type Database = {
     }
     Enums: {
       application_status: "draft" | "review" | "final"
+      grant_section_category:
+        | "organization_info"
+        | "project_details"
+        | "financial_info"
+        | "impact_info"
+      grant_section_category_old:
+        | "organization_info"
+        | "project_details"
+        | "financial_info"
+        | "impact_info"
       grant_status:
         | "identified"
         | "in_progress"
@@ -1105,16 +1115,6 @@ export type Database = {
         | "rejected"
       organization_type: "foundation" | "charity" | "business"
       project_status: "active" | "completed" | "on_hold"
-      template_category:
-        | "organization_info"
-        | "project_details"
-        | "financial_info"
-        | "impact_info"
-      template_category_old:
-        | "organization_info"
-        | "project_details"
-        | "financial_info"
-        | "impact_info"
       transaction_type: "income" | "expense"
       user_role: "owner" | "admin" | "user"
     }

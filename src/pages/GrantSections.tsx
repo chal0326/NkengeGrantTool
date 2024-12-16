@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { GrantSectionList } from '../components/grant-sections/GrantSectionList';
 import { StaffMemberSection } from '../components/grant-sections/StaffMemberSection';
+import { OrganizationInfo } from '../components/grant-sections/OrganizationInfo';
+import { ProjectDetails } from '../components/grant-sections/ProjectDetails';
 import { useGrantSections } from '../hooks/useGrantSections';
 import type { GrantSection, GrantSectionType } from '../types';
 
@@ -25,12 +27,14 @@ export default function GrantSections() {
     setShowForm(true);
   };
 
-  const handleSave = async (data: any) => {
+  const handleSave = async (data: Record<string, unknown>) => {
     try {
+      if (!selectedType) return;
+
       if (selectedSection) {
-        await updateSection(selectedSection.id, data);
+        await updateSection(selectedSection.id, { content: data });
       } else {
-        await createSection(data);
+        await createSection({ type: selectedType, content: data });
       }
       setShowForm(false);
       setSelectedSection(null);
@@ -40,8 +44,50 @@ export default function GrantSections() {
     }
   };
 
+  const handleCancel = () => {
+    setShowForm(false);
+    setSelectedSection(null);
+    setSelectedType(null);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
+
+  if (showForm) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">
+            {selectedSection ? 'Edit' : 'Create'} Grant Section
+          </h1>
+          <Button variant="outline" onClick={handleCancel}>
+            Cancel
+          </Button>
+        </div>
+
+        <Card className="p-6">
+          {selectedType === 'staff_member' && (
+            <StaffMemberSection
+              initialData={selectedSection?.content as typeof StaffMemberSection | null | undefined}
+              onSave={(data: typeof StaffMemberSection) => handleSave(data)}
+            />
+          )}
+          {selectedType === 'organization_info' && (
+            <OrganizationInfo
+              initialData={selectedSection?.content as any}
+              onSave={(data: any) => handleSave(data)}
+            />
+          )}
+          {selectedType === 'project_details' && (
+            <ProjectDetails
+              initialData={selectedSection?.content}
+              onSave={handleSave}
+            />
+          )}
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -74,22 +120,10 @@ export default function GrantSections() {
         </div>
       </div>
 
-      {showForm ? (
-        <Card className="p-6">
-          {selectedType === 'staff_member' && (
-            <StaffMemberSection
-              initialData={selectedSection?.content}
-              onSave={handleSave}
-            />
-          )}
-          {/* Add other section forms here */}
-        </Card>
-      ) : (
-        <GrantSectionList
-          sections={sections}
-          onSelectSection={handleEdit}
-        />
-      )}
+      <GrantSectionList
+        sections={sections}
+        onSelectSection={handleEdit}
+      />
     </div>
   );
 } 
