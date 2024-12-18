@@ -8,7 +8,10 @@ interface GrantSectionListProps {
 }
 
 export function GrantSectionList({ sections, onSelectSection }: GrantSectionListProps) {
-  const getSectionTitle = (type: string) => {
+  console.log('Sections data:', sections);
+
+  const getSectionTitle = (type: string | undefined) => {
+    if (!type) return 'Unknown Type';
     return type.split('_').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');

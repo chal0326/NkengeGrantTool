@@ -157,7 +157,7 @@ export interface ProjectActivityTemplate extends BaseTemplate {
 }
 
 export interface BudgetItemTemplate extends BaseTemplate {
-  type: 'budget_item';
+  type: TemplateType;
   category: string;
   description: string;
   amount: number;
@@ -191,13 +191,23 @@ export interface GrantApplication {
 export type { TemplateOption, TemplateSelectedOption, TemplateOptionCategory };
 
 // Base types for grant sections
-export type GrantSectionType = 'organization_info' | 'project_details' | 'financial_info' | 'impact_info' | 'staff_member';
+export type GrantSectionType = 
+  | 'organization_info' 
+  | 'project_details' 
+  | 'financial_info' 
+  | 'impact_info' 
+  | 'staff_member'
+  | 'project_activity'
+  | 'budget_item'
+  | 'demographic_category'
+  | 'community_partnership'
+  | 'program';
 
 export interface GrantSection {
   id: string;
   name: string;
   type: GrantSectionType;
-  content: Record<string, any>;
+  content: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -262,4 +272,46 @@ export interface GrantSectionSelectedOption {
   section_id: string;
   option_id: string;
   created_at: string;
+}
+
+export interface ProjectActivitySection {
+  type: 'project_activity';
+  name: string;
+  activity: string;
+  method: string;
+  timeline: string;
+  responsibleParty: string;
+}
+
+export interface BudgetItemSection {
+  type: 'budget_item';
+  name: string;
+  category: string;
+  description: string;
+  amount: number;
+}
+
+export interface DemographicCategorySection {
+  type: 'demographic_category';
+  name: string;
+  category: string;
+  description: string;
+  collectionMethod: string;
+}
+
+export interface ProgramSection {
+  type: 'program';
+  name: string;
+  description: string;
+  impact: string;
+  artForms?: string[];
+  programTypes?: string[];
+}
+
+export interface CommunityPartnershipSection {
+  type: 'community_partnership';
+  name: string;
+  partner: string;
+  role: string;
+  contribution: string;
 }

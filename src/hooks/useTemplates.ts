@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import supabase from '../lib/supabase';
-import type { Template, TemplateData, Json } from '../types';
+import type { Template, TemplateData } from '../types';
 
 interface SaveTemplateParams {
   id?: string;

@@ -1,59 +1,57 @@
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FormField } from '../form/FormField';
-import { TextArea } from '../form/TextArea';
-import { FileUpload } from '../form/FileUpload';
 import type { GrantFormData } from '../../types/grant';
 
-export function FinancialInfo() {
+const FinancialInfo: React.FC = () => {
   const { register } = useFormContext<GrantFormData>();
 
   return (
-    <div className="space-y-6">
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Financial Information</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Provide details about your organization's finances and funding needs.
-        </p>
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">Financial Information</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Grant Amount ($)
+          </label>
+          <input
+            type="number"
+            {...register('amount', { valueAsNumber: true })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Application Deadline
+          </label>
+          <input
+            type="date"
+            {...register('deadline')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Posted Date
+          </label>
+          <input
+            type="date"
+            {...register('posted_date')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Close Date
+          </label>
+          <input
+            type="date"
+            {...register('close_date')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
       </div>
-
-      <FormField
-        {...register('financial.annualBudget', { valueAsNumber: true })}
-        type="number"
-        label="What is your organization's annual operating budget?"
-        placeholder="Enter amount in USD"
-      />
-
-      <FormField
-        {...register('financial.projectBudget', { valueAsNumber: true })}
-        type="number"
-        label="What is the total budget for the proposed project/program?"
-        placeholder="Enter amount in USD"
-      />
-
-      <FormField
-        {...register('financial.requestedAmount', { valueAsNumber: true })}
-        type="number"
-        label="How much funding are you requesting from this grant?"
-        placeholder="Enter amount in USD"
-      />
-
-      <FormField
-        {...register('financial.isFullyFunded')}
-        type="checkbox"
-        label="Will this grant fully fund the project?"
-      />
-
-      <TextArea
-        {...register('financial.otherFunding')}
-        label="What are your other sources of funding?"
-        placeholder="List other funding sources and amounts"
-      />
-
-      <FileUpload
-        name="financialStatements"
-        label="Upload audited financial statements for the last fiscal year"
-        accept=".pdf,.xls,.xlsx"
-      />
     </div>
   );
-}
+};
+
+export default FinancialInfo; 

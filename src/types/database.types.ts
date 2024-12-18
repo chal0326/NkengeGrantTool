@@ -75,6 +75,24 @@ export type Database = {
           },
         ]
       }
+      art_forms: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       budget_line_items: {
         Row: {
           amount: number
@@ -663,6 +681,84 @@ export type Database = {
         }
         Relationships: []
       }
+      program_art_forms: {
+        Row: {
+          art_form_id: string
+          program_id: string
+        }
+        Insert: {
+          art_form_id: string
+          program_id: string
+        }
+        Update: {
+          art_form_id?: string
+          program_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_art_forms_art_form_id_fkey"
+            columns: ["art_form_id"]
+            isOneToOne: false
+            referencedRelation: "art_forms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "program_art_forms_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      program_types: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      program_types_mapping: {
+        Row: {
+          program_id: string
+          program_type_id: string
+        }
+        Insert: {
+          program_id: string
+          program_type_id: string
+        }
+        Update: {
+          program_id?: string
+          program_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_types_mapping_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "program_types_mapping_program_type_id_fkey"
+            columns: ["program_type_id"]
+            isOneToOne: false
+            referencedRelation: "program_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       programs: {
         Row: {
           created_at: string | null
@@ -1096,12 +1192,21 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      application_status: "draft" | "review" | "final"
+      application_status:
+        | "draft"
+        | "review"
+        | "final"
+        | "NULL"
+        | "in_progress"
+        | "under_review"
+        | "submitted"
+        | "rejected"
       grant_section_category:
         | "organization_info"
         | "project_details"
         | "financial_info"
         | "impact_info"
+        | "additional_info"
       grant_section_category_old:
         | "organization_info"
         | "project_details"
@@ -1113,6 +1218,8 @@ export type Database = {
         | "submitted"
         | "approved"
         | "rejected"
+        | "NULL"
+        | "under_review"
       organization_type: "foundation" | "charity" | "business"
       project_status: "active" | "completed" | "on_hold"
       transaction_type: "income" | "expense"

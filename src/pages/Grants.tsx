@@ -1,29 +1,21 @@
 import React, { useState } from 'react';
 import { useGrants } from '../hooks/useGrants';
 import { GrantList } from '../components/grants/GrantList';
+import { GrantCSVImport } from '../components/grants/GrantCSVImport';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Plus, Search as SearchIcon } from 'lucide-react';
+import { Plus, Search as SearchIcon, Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { grantSchema } from '../types/grant';
+import type { GrantFormData } from '../types/grant';
 
-const grantSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  organization: z.string().min(1, 'Organization is required'),
-  amount: z.number().min(0, 'Amount must be positive'),
-  deadline: z.string().min(1, 'Deadline is required'),
-  description: z.string().min(1, 'Description is required'),
-  requirements: z.string(),
-  notes: z.string(),
-  status: z.enum(['identified', 'in_progress', 'submitted', 'approved', 'rejected']),
-});
-
-type GrantFormData = z.infer<typeof grantSchema>;
+type Mode = 'view' | 'create' | 'import';
 
 export default function Grants() {
-  const { grants, loading, error, addGrant } = useGrants();
-  const [isCreating, setIsCreating] = useState(false);
+  const { grants, loading, error, addGrant, addGrants } = useGrants();
+  const [mode, setMode] = useState<Mode>('view');
   const [searchTerm, setSearchTerm] = useState('');
   
   const { register, handleSubmit, formState: { errors } } = useForm<GrantFormData>({
@@ -46,21 +38,32 @@ export default function Grants() {
   const onSubmit = async (data: GrantFormData) => {
     const result = await addGrant(data);
     if (result) {
-      setIsCreating(false);
+      setMode('view');
     }
+  };
+
+  const handleImport = async (grants: Partial<GrantFormData>[]) => {
+    await addGrants(grants);
+    setMode('view');
   };
 
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Grants</h1>
-        <Button onClick={() => setIsCreating(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Grant
-        </Button>
+        <div className="flex space-x-4">
+          <Button onClick={() => setMode('import')}>
+            <Upload className="w-4 h-4 mr-2" />
+            Import CSV
+          </Button>
+          <Button onClick={() => setMode('create')}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Grant
+          </Button>
+        </div>
       </div>
 
-      {isCreating ? (
+      {mode === 'create' ? (
         <Card>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -110,6 +113,42 @@ export default function Grants() {
                 {errors.deadline && (
                   <p className="mt-1 text-sm text-red-600">{errors.deadline.message}</p>
                 )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Opportunity Number</label>
+                <input
+                  type="text"
+                  {...register('opportunity_number')}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">URL</label>
+                <input
+                  type="url"
+                  {...register('opportunity_url')}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Agency Code</label>
+                <input
+                  type="text"
+                  {...register('agency_code')}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Posted Date</label>
+                <input
+                  type="date"
+                  {...register('posted_date')}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                />
               </div>
             </div>
 
@@ -161,7 +200,7 @@ export default function Grants() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setIsCreating(false)}
+                onClick={() => setMode('view')}
               >
                 Cancel
               </Button>
@@ -171,6 +210,11 @@ export default function Grants() {
             </div>
           </form>
         </Card>
+      ) : mode === 'import' ? (
+        <GrantCSVImport
+          onImport={handleImport}
+          onCancel={() => setMode('view')}
+        />
       ) : (
         <>
           <div className="relative">

@@ -1,57 +1,57 @@
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FormField } from '../form/FormField';
-import { TextArea } from '../form/TextArea';
-import { FileUpload } from '../form/FileUpload';
 import type { GrantFormData } from '../../types/grant';
 
-export function OrganizationInfo() {
+const OrganizationInfo: React.FC = () => {
   const { register } = useFormContext<GrantFormData>();
 
   return (
-    <div className="space-y-6">
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Organization Information</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Please provide basic information about your organization.
-        </p>
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold">Organization Information</h2>
+      <div className="grid grid-cols-1 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Organization Name
+          </label>
+          <input
+            type="text"
+            {...register('organization')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Grant Name/Title
+          </label>
+          <input
+            type="text"
+            {...register('name')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Opportunity Number
+          </label>
+          <input
+            type="text"
+            {...register('opportunity_number')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Agency Code
+          </label>
+          <input
+            type="text"
+            {...register('agency_code')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
       </div>
-
-      <FormField
-        {...register('organizationName')}
-        label="What is the official name of your organization?"
-        placeholder="Enter your organization's legal name"
-      />
-
-      <FormField
-        {...register('hasNonProfitStatus')}
-        type="checkbox"
-        label="Do you have 501(c)(3) nonprofit status?"
-      />
-
-      <FileUpload
-        name="irsLetter"
-        label="Upload IRS determination letter"
-        accept=".pdf,.doc,.docx"
-        condition="hasNonProfitStatus"
-      />
-
-      <FormField
-        {...register('ein')}
-        label="What is your EIN (Employer Identification Number)?"
-        placeholder="XX-XXXXXXX"
-      />
-
-      <TextArea
-        {...register('missionStatement')}
-        label="What is your organization's mission statement?"
-        placeholder="Enter your organization's mission statement"
-      />
-
-      <TextArea
-        {...register('organizationHistory')}
-        label="Provide a brief history of your organization"
-        placeholder="Describe your organization's history and development"
-      />
     </div>
   );
-}
+};
+
+export default OrganizationInfo; 
